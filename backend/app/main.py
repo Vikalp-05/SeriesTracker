@@ -1,6 +1,9 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.routes import router
 
 app = FastAPI(title="Series Rating Tracker API")
