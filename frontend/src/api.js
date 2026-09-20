@@ -34,3 +34,39 @@ export async function getSeasonDetail(id, seasonNumber) {
   const res = await fetch(`${BASE_URL}/tv/${id}/season/${seasonNumber}`)
   return res.json()
 }
+
+export async function signup(email, password) {
+  const res = await fetch(`${BASE_URL}/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.detail || 'Signup failed')
+  }
+  return res.json()
+}
+
+export async function login(email, password) {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.detail || 'Login failed')
+  }
+  const data = await res.json()
+  localStorage.setItem('token', data.access_token)
+  return data
+}
+
+export function logout() {
+  localStorage.removeItem('token')
+}
+
+export function getToken() {
+  return localStorage.getItem('token')
+}
