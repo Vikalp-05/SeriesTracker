@@ -1,12 +1,19 @@
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 load_dotenv()
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.database import create_db_and_tables
 from app.routes import router
 
-app = FastAPI(title="Series Rating Tracker API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
+app = FastAPI(title="Series Rating Tracker API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,0 +1,5 @@
+sqlmodel>=0.0.40
+pydantic>=2.9,<2.12
+psycopg[binary]
+pyjwt
+bcrypt
