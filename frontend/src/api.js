@@ -5,24 +5,28 @@ export async function ping() {
   return res.json()
 }
 
-export async function getTrending(window = 'week') {
+export async function getTrending(window = 'day') {
   const res = await fetch(`${BASE_URL}/trending?window=${window}`)
-  return res.json()
+  const data = await res.json()
+  return data.results
 }
 
 export async function searchShows(query) {
-  const res = await fetch(`${BASE_URL}/search?q=${encodeURIComponent(query)}`)
-  return res.json()
+  const res = await fetch(`${BASE_URL}/search?query=${encodeURIComponent(query)}`)
+  const data = await res.json()
+  return data.results
 }
 
 export async function getGenres() {
   const res = await fetch(`${BASE_URL}/genres`)
-  return res.json()
+  const data = await res.json()
+  return data.genres
 }
 
 export async function discoverByGenre(genreId) {
   const res = await fetch(`${BASE_URL}/discover?genre_id=${genreId}`)
-  return res.json()
+  const data = await res.json()
+  return data.results
 }
 
 export async function getShowDetail(id) {
@@ -69,4 +73,27 @@ export function logout() {
 
 export function getToken() {
   return localStorage.getItem('token')
+}
+
+function authHeaders() {
+  const token = getToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+export async function rateEpisode(showId, episodeId, score) {
+  const res = await fetch(`${BASE_URL}/ratings`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ show_id: showId, episode_id: episodeId, score }),
+  })
+  if (!res.ok) throw new Error('Could not save rating')
+  return res.json()
+}
+
+export async function getRatingsForShow(showId) {
+  const res = await fetch(`${BASE_URL}/ratings/show/${showId}`, {
+    headers: authHeaders(),
+  })
+  if (!res.ok) throw new Error('Could not load your ratings')
+  return res.json()
 }

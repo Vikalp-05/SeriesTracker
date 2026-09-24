@@ -2,7 +2,7 @@ import RatingBadge from './RatingBadge.jsx'
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w300'
 
-export default function EpisodeRow({ episode }) {
+export default function EpisodeRow({ episode, userRating, onRate }) {
   const thumbnailUrl = episode?.still_path ? `${IMAGE_BASE_URL}${episode.still_path}` : null
 
   return (
@@ -49,6 +49,26 @@ export default function EpisodeRow({ episode }) {
       <div style={{ background: 'var(--surface)', borderRadius: '999px', border: '1px solid var(--border)', padding: '6px 12px' }}>
         <RatingBadge rating={episode?.vote_average?.toFixed(1)} />
       </div>
+
+      {onRate && (
+        <select
+          value={userRating ?? ''}
+          onChange={(e) => onRate(Number(e.target.value))}
+          style={{
+            background: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: '8px',
+            padding: '6px 10px',
+            color: 'var(--text)',
+            fontSize: '13px',
+          }}
+        >
+          <option value="" disabled>Rate</option>
+          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+      )}
     </div>
   )
 }
